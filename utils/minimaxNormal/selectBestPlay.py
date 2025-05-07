@@ -1,0 +1,35 @@
+from typing import Tuple
+from TicTacToe import TicTacToe
+from minimax_normal import minimax
+
+def select_best_move(state: TicTacToe, depth: int) -> Tuple[Tuple[int,int], int]:
+    """
+    Devuelve (mejor_move, nodos_explorados_en_este_turno)
+    - Para X: maximiza el valor de minimax
+    - Para O: minimiza el valor de minimax (peor para X)
+    """
+    best_move = None
+    total_nodes = 0
+
+    if state.turn == 'X':
+        best_val = float('-inf')
+        for move in state.available_moves():
+            child = state.clone()
+            child.make_move(move)
+            v, n = minimax(child, depth-1, False)
+            total_nodes += n
+            if v > best_val:
+                best_val = v
+                best_move = move
+    else:
+        best_val = float('inf')
+        for move in state.available_moves():
+            child = state.clone()
+            child.make_move(move)
+            v, n = minimax(child, depth-1, True)
+            total_nodes += n
+            if v < best_val:
+                best_val = v
+                best_move = move
+
+    return best_move, total_nodes
